@@ -6,10 +6,18 @@ from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 from keras import backend as K
 import json
+import mlflow
+import mlflow.keras
+
+def remove(digit, x, y):
+    idx = (y != digit).nonzero()
+    return x[idx], y[idx]
+
+mlflow.keras.autolog()
 
 batch_size = 32
 num_classes = 10
-epochs = 60
+epochs = 1
 
 # input image dimensions
 img_rows, img_cols = 28, 28
@@ -64,6 +72,6 @@ print('Test loss:', score[0])
 print('Test accuracy:', score[1])
 
 
-with open('model.json', 'w') as outfile:
+with open('model/model.json', 'w') as outfile:
     json.dump(model.to_json(), outfile)
-model.save_weights('weights2.h5')
+model.save_weights('model/weights.h5')

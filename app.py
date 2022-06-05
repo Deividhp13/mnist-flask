@@ -8,12 +8,12 @@ import base64
 import sys 
 import os
 sys.path.append(os.path.abspath("./model"))
-from load import *
+from model.load import *
 
 app = Flask(__name__)
-global model, graph
-model, graph = init()
-    
+global model, graph, sess
+model, graph, sess = init()
+
 @app.route('/')
 def index():
     return render_template("index.html")
@@ -31,6 +31,7 @@ def predict():
     # reshape image data for use in neural network
     x = x.reshape(1,28,28,1)
     with graph.as_default():
+        set_session(sess)
         out = model.predict(x)
         print(out)
         print(np.argmax(out, axis=1))
@@ -45,5 +46,5 @@ def parseImage(imgData):
 
 if __name__ == '__main__':
     app.debug = True
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get("PORT", 7000))
     app.run(host='0.0.0.0', port=port)
